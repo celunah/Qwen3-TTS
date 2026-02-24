@@ -24,3 +24,6 @@ venv/
 env/
 models/
 runs/
+*.whl
+*dataset*
+*outputs*

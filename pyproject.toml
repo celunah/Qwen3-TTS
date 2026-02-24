@@ -30,6 +30,7 @@ dependencies = [
   "einops",
   "flash-attn",
   "tensorboard>=2.20.0",
+  "torchvision>=0.23.0",
 ]
 
 [project.urls]
@@ -38,6 +39,7 @@ Repository = "https://github.com/Qwen/Qwen3-TTS"
 
 [project.scripts]
 qwen-tts-demo = "qwen_tts.cli.demo:main"
+qwen-tts-download-models = "qwen_tts.cli.download_models:main"
 
 [tool.setuptools]
 packages = { find = { where = ["."] , include = ["qwen_tts*"] } }
@@ -64,8 +66,14 @@ torchaudio = [
   { index = "pytorch-cu128", extra = "cu128" },
 ]
 flash-attn = { path = "flash_attn-2.8.3+cu128torch2.8.0cxx11abiFALSE-cp311-cp311-win_amd64.whl" }
+qwen-tts = { workspace = true }
 
 [[tool.uv.index]]
 name = "pytorch-cu128"
 url = "https://download.pytorch.org/whl/cu128"
 explicit = true
+
+[dependency-groups]
+dev = [
+    "qwen-tts",
+]

@@ -145,6 +145,44 @@ Also, you should have hardware that is compatible with FlashAttention 2. Read mo
 
 After installation, you can import `Qwen3TTSModel` to run custom voice TTS, voice design, and voice clone. The model weights can be specified either as a Hugging Face model id (recommended) or as a local directory path you downloaded. For all the `generate_*` functions below, besides the parameters shown and explicitly documented, you can also pass generation kwargs supported by Hugging Face Transformers `model.generate`, e.g., `max_new_tokens`, `top_p`, etc.
 
+#### Simple Class-Based API (Load -> Generate)
+
+This repository also includes a lightweight wrapper class for "black box" usage: `qwen_tts.tts_api.TTSEngine`. It is designed for callers that want a simple two-step flow:
+
+1. `tts_load(...)` with an explicit local `model_path` (and `reference_audio_path` for Base voice-clone models)
+2. `tts_inference(...)` with input `text`, model-specific arguments, and an explicit `output_path`
+
+This wrapper is useful when you want to treat Qwen3-TTS as a callable component and only care about:
+- which local model directory to load
+- which reference audio file to use (Base models)
+- which speaker or style instruction to pass (CustomVoice / VoiceDesign models)
+- what text to synthesize
+- where to write the generated audio file
+
+Example (offline/local-path workflow, Base model):
+
+```python
+from qwen_tts.tts_api import TTSEngine
+
+engine = TTSEngine()
+engine.tts_load(
+    model_path="models/Qwen3-TTS-12Hz-0.6B-Base",
+    reference_audio_path="qwen3_test_qwen3_tts_dataset/data/ref_audio.wav",
+)
+audio_path = engine.tts_inference(
+    text="Hello from the Qwen3-TTS wrapper API.",
+    output_path="tts_test_outputs/hello.wav",
+)
+print(audio_path)
+```
+
+The wrapper supports offline/local inference for all three Qwen3-TTS model types and dispatches automatically based on the loaded model:
+- `Base` -> voice clone (`reference_audio_path` required)
+- `CustomVoice` -> custom speaker generation (`speaker` required)
+- `VoiceDesign` -> instruction-driven voice design (`instruct` required)
+
+It writes the first generated waveform to the output path you provide. See `docs/API.md` for parameter details and examples for each model type.
+
 #### Custom Voice Generate
 
 For custom voice models (`Qwen3-TTS-12Hz-1.7B/0.6B-CustomVoice`), you just need to call `generate_custom_voice`, passing a single string or a batch list, along with `language`, `speaker`, and optional `instruct`. You can also call `model.get_supported_speakers()` and `model.get_supported_languages()` to see which speakers and languages the current model supports.

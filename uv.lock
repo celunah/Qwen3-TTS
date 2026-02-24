@@ -1993,6 +1993,7 @@ dependencies = [
     { name = "sox" },
     { name = "tensorboard" },
     { name = "torchaudio" },
+    { name = "torchvision" },
     { name = "transformers" },
 ]
 
@@ -2001,6 +2002,11 @@ cu128 = [
     { name = "torch" },
     { name = "torchaudio" },
     { name = "torchvision" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "qwen-tts" },
 ]
 
 [package.metadata]
@@ -2017,10 +2023,14 @@ requires-dist = [
     { name = "torch", marker = "extra == 'cu128'", specifier = "==2.8.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "qwen-tts", extra = "cu128" } },
     { name = "torchaudio" },
     { name = "torchaudio", marker = "extra == 'cu128'", specifier = ">=2.8.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "qwen-tts", extra = "cu128" } },
+    { name = "torchvision", specifier = ">=0.23.0" },
     { name = "torchvision", marker = "extra == 'cu128'", specifier = ">=0.23.0", index = "https://download.pytorch.org/whl/cu128", conflict = { package = "qwen-tts", extra = "cu128" } },
     { name = "transformers", specifier = "==4.57.3" },
 ]
 provides-extras = ["cu128"]
+
+[package.metadata.requires-dev]
+dev = [{ name = "qwen-tts", editable = "." }]
 
 [[package]]
 name = "regex"
